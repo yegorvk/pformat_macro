@@ -1,19 +1,25 @@
-use syn::{Expr, Lit, Token};
+use crate::data::{Args, FormatArgs, FormatStr, PFormatArgs, PFormatArgsAST};
 use syn::parse::{Parse, ParseStream};
 use syn::spanned::Spanned;
-use crate::data::{Args, FormatArgs, FormatStr, PFormatArgs, PFormatArgsAST};
+use syn::{Expr, Lit, Token};
 
 impl Parse for FormatStr {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let format: Expr = input.parse()?;
         if let Expr::Lit(format) = format {
             if let Lit::Str(format) = format.lit {
-                return Ok(format.into())
+                return Ok(format.into());
             }
 
-            Err(syn::Error::new(format.span(), "format must be a constant string literal"))
+            Err(syn::Error::new(
+                format.span(),
+                "format must be a constant string literal",
+            ))
         } else {
-            Err(syn::Error::new(format.span(), "format must be a constant string literal"))
+            Err(syn::Error::new(
+                format.span(),
+                "format must be a constant string literal",
+            ))
         }
     }
 }

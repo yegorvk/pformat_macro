@@ -7,8 +7,13 @@ fn test_pformat_args_plain_string() {
 
 #[test]
 fn test_pformat_args() {
-    assert_eq!(format!("{}", pformat_args!("Hello, {}. 1 + 1 = {} for sure!", "Bob", 3)),
-               "Hello, Bob. 1 + 1 = 3 for sure!")
+    assert_eq!(
+        format!(
+            "{}",
+            pformat_args!("Hello, {}. 1 + 1 = {} for sure!", "Bob", 3)
+        ),
+        "Hello, Bob. 1 + 1 = 3 for sure!"
+    )
 }
 
 #[test]

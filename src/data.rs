@@ -1,16 +1,17 @@
 use proc_macro2::Span;
-use syn::{Expr, LitStr, Token};
 use syn::punctuated::Punctuated;
 use syn::spanned::Spanned;
+use syn::{Expr, LitStr, Token};
 
 #[repr(transparent)]
 pub struct FormatStr {
-    format: LitStr
+    format: LitStr,
 }
 
 impl FormatStr {
     pub fn split_into_pieces<T: FromIterator<String>>(&self) -> T {
-        self.format.value()
+        self.format
+            .value()
             .split(&"{}")
             .map(|x| x.to_string())
             .collect()
@@ -27,14 +28,14 @@ pub type Args = Punctuated<Expr, Token![,]>;
 
 #[repr(transparent)]
 pub struct FormatArgs {
-    args: Option<Args>
+    args: Option<Args>,
 }
 
 impl FormatArgs {
     fn len(&self) -> usize {
         match &self.args {
             Some(args) => args.len(),
-            None => 0
+            None => 0,
         }
     }
 
@@ -54,7 +55,7 @@ impl IntoIterator for FormatArgs {
     fn into_iter(self) -> Self::IntoIter {
         match self.args {
             Some(args) => args.into_iter(),
-            None => Args::default().into_iter()
+            None => Args::default().into_iter(),
         }
     }
 }
@@ -67,12 +68,12 @@ impl From<Option<Args>> for FormatArgs {
 
 pub struct PFormatArgsAST {
     pub str: FormatStr,
-    pub args: FormatArgs
+    pub args: FormatArgs,
 }
 
 pub struct PFormatArgs {
     pub pieces: Vec<String>,
-    pub args: Vec<Expr>
+    pub args: Vec<Expr>,
 }
 
 impl TryFrom<PFormatArgsAST> for PFormatArgs {
@@ -82,13 +83,20 @@ impl TryFrom<PFormatArgsAST> for PFormatArgs {
         let pieces: Vec<String> = value.str.split_into_pieces();
 
         if pieces.len() - 1 < value.args.len() {
-            Err(syn::Error::new(value.args.span_or_default(),
-                                "too many format arguments passed (more than parameters)"))
+            Err(syn::Error::new(
+                value.args.span_or_default(),
+                "too many format arguments passed (more than parameters)",
+            ))
         } else if pieces.len() - 1 > value.args.len() {
-            Err(syn::Error::new(value.args.span_or_default(),
-                                "too few format arguments passed (fewer than parameters)"))
+            Err(syn::Error::new(
+                value.args.span_or_default(),
+                "too few format arguments passed (fewer than parameters)",
+            ))
         } else {
-            Ok(PFormatArgs { pieces, args: value.args.into_iter().collect() })
+            Ok(PFormatArgs {
+                pieces,
+                args: value.args.into_iter().collect(),
+            })
         }
     }
 }

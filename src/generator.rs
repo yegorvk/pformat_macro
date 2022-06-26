@@ -1,7 +1,7 @@
+use crate::data::PFormatArgs;
 use proc_macro2::{Span, TokenStream};
 use proc_quote::quote as quote2;
 use syn::{Expr, GenericParam, Ident, TypeParam};
-use crate::data::PFormatArgs;
 
 fn ident_token(name: &str) -> Ident {
     Ident::new(name, Span::call_site())
@@ -16,9 +16,7 @@ fn arg_name(i: usize) -> Ident {
 }
 
 fn generic_params(count: usize) -> impl Iterator<Item = GenericParam> {
-    (0..count)
-        .map(|i| TypeParam::from(arg_type(i)).into())
-
+    (0..count).map(|i| TypeParam::from(arg_type(i)).into())
 }
 
 fn arg_declaration(i: usize) -> TokenStream {
@@ -65,8 +63,10 @@ fn expand_macro_internal(name: &str, input: PFormatArgs) -> TokenStream {
     let args_init = args_init(&input.args);
     let arg_count = input.args.len();
 
-    let (generic_params, generic_params_copy)
-        = (generic_params(input.args.len()), generic_params(input.args.len()));
+    let (generic_params, generic_params_copy) = (
+        generic_params(input.args.len()),
+        generic_params(input.args.len()),
+    );
 
     let generic_params = quote2! {
         #(#generic_params, )*
@@ -76,7 +76,7 @@ fn expand_macro_internal(name: &str, input: PFormatArgs) -> TokenStream {
         #(#generic_params_copy: Display, )*
     };
 
-    let indices = 1..(arg_count+1);
+    let indices = 1..(arg_count + 1);
 
     let pieces = if pieces.is_empty() {
         vec![String::new()]
