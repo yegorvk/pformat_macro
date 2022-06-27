@@ -9,7 +9,6 @@ categories = ["development-tools"]
 readme = "README.md"
 exclude = [".*", "target", "tests", ".gitignore", "Cargo.lock"]
 license = "MIT"
-license-file = "LICENSE.md"
 repository = "https://github.com/egor-vaskon/pformat_macro"
 
 [lib]
